@@ -1,21 +1,20 @@
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Iterable, Optional
 from functools import reduce
 
 from tqdm import tqdm
 
-import core as types
 from core import _Module
-from core.layer import *
+from core.layers import *
 
 
 class Sequential(_Module):
-    def __init__(self, *layers: types._Layer):
+    def __init__(self, layers: List[types._Layer]):
         super(Sequential, self).__init__()
 
-        self.layers = layers
-        self.optimizer = None
-        self.loss = None
-        self.metric = None
+        self.layers: Iterable[types._Layer] = layers
+        self.optimizer: Optional[types._Optimizer] = None
+        self.loss: Optional[types._Loss] = None
+        self.metric: Optional[types._Metric] = None
 
     def forward(self, X: np.ndarray, grad: bool = True) \
             -> np.ndarray:
@@ -35,16 +34,16 @@ class Sequential(_Module):
 
         return result
 
-    def update(self, lr: float):
-        super(Sequential, self).update(lr)
+    def update(self):
+        super(Sequential, self).update()
 
         for layer in filter(lambda l: issubclass(l.__class__, types._Layer), self.layers):
-            layer.update(self.optimizer.lr)
+            layer.update(self.optimizer)
 
     def compile(self,
-                optimizer: Union[str, types._Optimizer],
-                loss: Union[str, types._Loss],
-                metrics: List[Union[str, types._Metric]]):
+                optimizer: Optional[types._Optimizer],
+                loss: Optional[types._Loss],
+                metrics: List[Optional[types._Metric]]):
 
         self.optimizer = optimizer if isinstance(optimizer, types._Optimizer) \
             else types.Optimizers.get(optimizer)()
@@ -62,7 +61,7 @@ class Sequential(_Module):
             forward = self.forward(X.T)
             loss = self.loss(forward, Y)
             self.backward(Y)
-            self.update(self.optimizer.lr)
+            self.update()
 
             if verbose and t:
                 t.set_postfix(loss=f'{loss:.4f}')
@@ -70,7 +69,7 @@ class Sequential(_Module):
 
     def evaluate(self, X: np.ndarray, Y: np.ndarray,
                  verbose: bool = True) \
-            -> Tuple[float, float]:
+            -> Tuple[Union[float, np.ndarray], float]:
 
         forward = self.forward(X.T, grad=False)
         loss = self.loss(forward, Y)
@@ -81,5 +80,6 @@ class Sequential(_Module):
         return loss, self.metric(forward, Y)
 
     @property
-    def size(self) -> int:
+    def size(self) \
+            -> int:
         return sum(map(lambda x: x.size, self.layers))

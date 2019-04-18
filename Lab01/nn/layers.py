@@ -1,5 +1,6 @@
 import numpy as np
 
+import core as types
 from core import _Module
 
 
@@ -16,24 +17,25 @@ class _Layer(_Module):
             -> np.ndarray:
         return self.forward(X, grad)
 
-    def update(self, lr: float):
-        super(_Layer, self).update(lr)
+    def update(self, optimizer: types._Optimizer):
+        super(_Layer, self).update()
 
     @property
-    def parameters(self) -> np.ndarray:
+    def parameters(self) \
+            -> np.ndarray:
         return np.empty(0)
 
 
-class Linear(_Layer):
+class Dense(_Layer):
     def __init__(self, *args):
-        super(Linear, self).__init__(*args)
+        super(Dense, self).__init__(*args)
 
         self.params = np.random.randn(self.out_dim, self.in_dim) * .1
         self.bias = np.random.randn(self.out_dim, 1) * .1
 
     def forward(self, X: np.ndarray, grad: bool = True) \
             -> np.ndarray:
-        super(Linear, self).forward(X, grad)
+        super(Dense, self).forward(X, grad)
 
         result = np.dot(self.params, X) + self.bias
 
@@ -41,7 +43,7 @@ class Linear(_Layer):
 
     def backward(self, grad: np.ndarray) \
             -> np.ndarray:
-        last = super(Linear, self).backward(grad)
+        last = super(Dense, self).backward(grad)
 
         size = np.size(grad, -1)
 
@@ -52,26 +54,27 @@ class Linear(_Layer):
 
         return result
 
-    def update(self, lr: float):
-        super(Linear, self).update(lr)
+    def update(self, optimizer: types._Optimizer):
+        super(Dense, self).update(optimizer)
 
-        self.params -= lr * self.dW
-        self.bias -= lr * self.db
+        self.parameters = optimizer.get_update(self.parameters, np.hstack([self.dW, self.db]))
 
         self.dW, self.db = 0, 0
 
     @property
-    def parameters(self) -> np.ndarray:
-        return np.concatenate([
+    def parameters(self) \
+            -> np.ndarray:
+        return np.hstack([
             self.params,
             self.bias,
         ])
 
     @parameters.setter
-    def parameters(self, parameters):
-        self.params = parameters[:-1]
-        self.bias = parameters[-1]
+    def parameters(self, parameters: np.ndarray):
+        self.params = parameters[:, :-1].reshape(self.params.shape)
+        self.bias = parameters[:, -1].reshape(self.bias.shape)
 
     @property
-    def size(self) -> int:
+    def size(self) \
+            -> int:
         return self.parameters.size

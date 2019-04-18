@@ -42,7 +42,7 @@ class _Module(object):
         pass
 
 
-from core.layer import _Layer
+from core.optimizers import _Optimizer, Optimizers
 from core.functional import _Activation, _Loss, Losses
-from core.optimizer import _Optimizer, Optimizers
-from core.metric import _Metric, Metrics
+from core.metrics import _Metric, Metrics
+from core.layers import _Layer

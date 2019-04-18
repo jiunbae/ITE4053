@@ -3,7 +3,10 @@ import numpy as np
 
 class _Metric:
     name = '_Metric'
-    pass
+
+    def __call__(self, inputs: np.ndarray, targets: np.ndarray) \
+            -> float:
+        return 0
 
 
 class Accuracy(_Metric):
