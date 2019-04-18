@@ -5,8 +5,8 @@ import numpy as np
 
 class _Module(object):
     def __init__(self, *args):
-        self._last_input = None
-        self._last_output = None
+
+        self._last_input, self._last_output = None, None
 
     def __call__(self, X: np.ndarray) \
             -> np.ndarray:
@@ -38,11 +38,39 @@ class _Module(object):
 
         return result
 
+    def after_backward(self, output: np.ndarray) \
+            -> np.ndarray:
+
+        return output
+
     def update(self, *args):
         pass
 
 
-from core.optimizers import _Optimizer, Optimizers
-from core.functional import _Activation, _Loss, Losses
-from core.metrics import _Metric, Metrics
-from core.layers import _Layer
+from nn.activations import Activation
+from nn.optimizers import Optimizer
+from nn.functional import Loss
+from nn.metrics import Metric
+from nn.layers import Layer
+from nn.modules import *
+
+
+def caller_wrapper(f):
+    return lambda *args, **kwargs: f(*args, **kwargs)
+
+
+activations = type('Activations', (object,), {
+    klass.__name__.lower(): caller_wrapper(klass) for klass in Activation.__subclasses__()
+})
+
+optimizers = type('Optimizers', (object,), {
+    klass.__name__: caller_wrapper(klass) for klass in Optimizer.__subclasses__()
+})
+
+losses = type('Losses', (object,), {
+    klass.name.lower(): caller_wrapper(klass) for klass in Loss.__subclasses__()
+})
+
+metrics = type('Metrics', (object, ), {
+    klass.__name__.lower(): caller_wrapper(klass) for klass in Metric.__subclasses__()
+})

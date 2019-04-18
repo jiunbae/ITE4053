@@ -1,20 +1,19 @@
-from typing import Union, List, Tuple, Iterable, Optional
+from typing import Union, List, Tuple, Iterable
 from functools import reduce
 
 from tqdm import tqdm
 
-from core import _Module
-from core.layers import *
+from nn.layers import *
 
 
-class Sequential(_Module):
-    def __init__(self, layers: List[types._Layer]):
-        super(Sequential, self).__init__()
+class Sequential(Layer):
+    def __init__(self, layers: List[types.Layer]):
+        super(Sequential, self).__init__(layers[0].input_dim, layers[-1].output_dim)
 
-        self.layers: Iterable[types._Layer] = layers
-        self.optimizer: Optional[types._Optimizer] = None
-        self.loss: Optional[types._Loss] = None
-        self.metric: Optional[types._Metric] = None
+        self.layers: Iterable[types.Layer] = layers
+        self.optimizer: Optional[types.Optimizer] = None
+        self.loss: Optional[types.Loss] = None
+        self.metric: Optional[types.Metric] = None
 
     def forward(self, X: np.ndarray, grad: bool = True) \
             -> np.ndarray:
@@ -35,22 +34,22 @@ class Sequential(_Module):
         return result
 
     def update(self):
-        super(Sequential, self).update()
+        super(Sequential, self).update(self.optimizer)
 
-        for layer in filter(lambda l: issubclass(l.__class__, types._Layer), self.layers):
-            layer.update(self.optimizer)
+        any(map(lambda layer: layer.update(self.optimizer),
+                filter(lambda layer: issubclass(type(layer), types.Layer), self.layers)))
 
     def compile(self,
-                optimizer: Optional[types._Optimizer],
-                loss: Optional[types._Loss],
-                metrics: List[Optional[types._Metric]]):
+                optimizer: Union[str, types.Optimizer],
+                loss: Union[str, types.Loss],
+                metrics: List[Union[str, types.Metric]]):
 
-        self.optimizer = optimizer if isinstance(optimizer, types._Optimizer) \
-            else types.Optimizers.get(optimizer)()
-        self.loss = loss if isinstance(loss, types._Loss) \
-            else types.Losses.get(loss, loss)()
-        self.metric = metrics[0] if isinstance(metrics[0], types._Metric) \
-            else types.Metrics.get(metrics[0], metrics[0])()
+        self.optimizer = optimizer if isinstance(optimizer, types.Optimizer) \
+            else getattr(types.optimizers, optimizer)()
+        self.loss = loss if isinstance(loss, types.Loss) \
+            else getattr(types.losses, loss)()
+        self.metric = metrics[0] if isinstance(metrics[0], types.Metric) \
+            else getattr(types.metrics, metrics[0])()
 
     def fit(self, X: np.ndarray, Y: np.ndarray,
             epochs: int = 1000, verbose: bool = True):

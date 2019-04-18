@@ -1,15 +1,20 @@
+from typing import Optional
+
 import numpy as np
 
-import core as types
-from core import _Module
+import nn as types
+from nn import _Module
 
 
-class _Layer(_Module):
-    def __init__(self, in_dim: int, out_dim: int = 1, *args):
-        super(_Layer, self).__init__(*args)
+class Layer(_Module):
+    def __init__(self, output_dim: int, input_dim: int,
+                 activation: Optional[types.Activation] = None,
+                 *args):
+        super(Layer, self).__init__(*args)
 
-        self.in_dim = in_dim
-        self.out_dim = out_dim
+        self.output_dim = output_dim
+        self.input_dim = input_dim
+        self.activation = activation and activation()
 
         self.dW, self.db = 0, 0
 
@@ -17,8 +22,25 @@ class _Layer(_Module):
             -> np.ndarray:
         return self.forward(X, grad)
 
-    def update(self, optimizer: types._Optimizer):
-        super(_Layer, self).update()
+    def after_forward(self, output: np.ndarray) \
+            -> np.ndarray:
+        output = super(Layer, self).after_forward(output)
+
+        if self.activation is not None:
+            output = self.activation.forward(output)
+
+        return output
+
+    def backward(self, grad: np.ndarray) \
+            -> np.ndarray:
+
+        if self.activation is not None:
+            grad = self.activation.backward(grad)
+
+        return grad
+
+    def update(self, optimizer: types.Optimizer):
+        super(Layer, self).update()
 
     @property
     def parameters(self) \
@@ -26,12 +48,14 @@ class _Layer(_Module):
         return np.empty(0)
 
 
-class Dense(_Layer):
-    def __init__(self, *args):
-        super(Dense, self).__init__(*args)
+class Dense(Layer):
+    def __init__(self, output_dim: int, input_dim: int,
+                 activation: Optional[types.Activation] = None,
+                 *args):
+        super(Dense, self).__init__(output_dim, input_dim, activation, *args)
 
-        self.params = np.random.randn(self.out_dim, self.in_dim) * .1
-        self.bias = np.random.randn(self.out_dim, 1) * .1
+        self.params = np.random.randn(self.output_dim, self.input_dim) * .1
+        self.bias = np.random.randn(self.output_dim, 1) * .1
 
     def forward(self, X: np.ndarray, grad: bool = True) \
             -> np.ndarray:
@@ -43,21 +67,23 @@ class Dense(_Layer):
 
     def backward(self, grad: np.ndarray) \
             -> np.ndarray:
-        last = super(Dense, self).backward(grad)
+        grad = super(Dense, self).backward(grad)
 
         size = np.size(grad, -1)
 
-        self.dW = np.dot(grad, last.T) / size
+        self.dW = np.dot(grad, self._last_input.T) / size
         self.db = np.sum(grad, axis=1, keepdims=True) / size
 
         result = np.dot(self.params.T, grad)
 
         return result
 
-    def update(self, optimizer: types._Optimizer):
+    def update(self, optimizer: types.Optimizer):
         super(Dense, self).update(optimizer)
 
-        self.parameters = optimizer.get_update(self.parameters, np.hstack([self.dW, self.db]))
+        self.params -= optimizer.lr * self.dW
+        self.bias -= optimizer.lr * self.db
+        # self.parameters = optimizer.get_update(self.parameters, np.hstack([self.dW, self.db]))
 
         self.dW, self.db = 0, 0
 

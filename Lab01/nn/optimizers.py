@@ -3,8 +3,7 @@ from typing import List
 import numpy as np
 
 
-class _Optimizer(object):
-    name = '_Optimizer'
+class Optimizer(object):
 
     def __init__(self, *args, **kwargs):
         pass
@@ -13,8 +12,7 @@ class _Optimizer(object):
         pass
 
 
-class SGD(_Optimizer):
-    name = 'sgd'
+class SGD(Optimizer):
 
     def __init__(self, lr: float = .001, **kwargs):
         super(SGD, self).__init__(**kwargs)
@@ -25,8 +23,7 @@ class SGD(_Optimizer):
         return params - self.lr * grads
 
 
-class Adam(_Optimizer):
-    name = 'adam'
+class Adam(Optimizer):
 
     def __init__(self, lr: float = .001, beta1: float = .9, beta2: float = .999,
                  epsilon: float = 1e-8, decay: float = .0, **kwargs):
@@ -58,8 +55,3 @@ class Adam(_Optimizer):
             results[i] = (p - lr * self.ms[i] / (np.sqrt(self.vs[i]) + self.epsilon)).reshape(params[i].shape)
 
         return results
-
-
-Optimizers = {
-    klass.name: klass for klass in _Optimizer.__subclasses__()
-}

@@ -1,22 +1,15 @@
 import numpy as np
 
 
-class _Metric:
-    name = '_Metric'
+class Metric:
 
     def __call__(self, inputs: np.ndarray, targets: np.ndarray) \
             -> float:
         return 0
 
 
-class Accuracy(_Metric):
-    name = 'accuracy'
+class Accuracy(Metric):
 
     def __call__(self, inputs: np.ndarray, targets: np.ndarray) \
             -> float:
         return (inputs == targets).all(axis=0).mean()
-
-
-Metrics = {
-    klass.name: klass for klass in _Metric.__subclasses__()
-}
