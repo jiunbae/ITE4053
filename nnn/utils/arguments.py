@@ -20,6 +20,8 @@ parser.add_argument('--optimizer', type=str, default='SGD',
 parser.add_argument('--loss', type=str, default='binary_crossentropy',
                     choices=['binary_crossentropy', 'mean_squared_error'],
                     help="Loss function")
+parser.add_argument('--normal', type=bool, action='store_true',
+                    help='Use normalized dataset')
 
 parser.add_argument('-l', '--layer', action='append', nargs='*',
                     help='Define Layer (input_dim, output_dim, activation)'

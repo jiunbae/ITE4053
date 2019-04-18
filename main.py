@@ -14,8 +14,8 @@ def main(args) -> float:
 
     with tqdm(total=args.repeat) as t:
         for e in range(args.repeat):
-            train = utils.Dataset(args.size)
-            test = utils.Dataset(args.size)
+            train = utils.Dataset(args.size, normal=args.normal)
+            test = utils.Dataset(args.size, normal=args.normal)
 
             # Build Network
             # default network is two dense layer with sigmoid activation which have 2 hidden layer
