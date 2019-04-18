@@ -42,9 +42,28 @@ class Layer(_Module):
     def update(self, optimizer: types.Optimizer):
         super(Layer, self).update()
 
+        _ = self.last_input, self.last_output
+
+    @property
+    def last_input(self) \
+            -> np.ndarray:
+
+        result = self._last_input
+        self._last_input = None
+        return result
+
+    @property
+    def last_output(self)\
+            -> np.ndarray:
+
+        result = self._last_output
+        self._last_output = None
+        return result
+
     @property
     def parameters(self) \
             -> np.ndarray:
+
         return np.empty(0)
 
 
@@ -81,10 +100,7 @@ class Dense(Layer):
     def update(self, optimizer: types.Optimizer):
         super(Dense, self).update(optimizer)
 
-        self.params -= optimizer.lr * self.dW
-        self.bias -= optimizer.lr * self.db
-        # self.parameters = optimizer.get_update(self.parameters, np.hstack([self.dW, self.db]))
-
+        self.parameters = optimizer.get_update(self.parameters, np.hstack([self.dW, self.db]))
         self.dW, self.db = 0, 0
 
     @property

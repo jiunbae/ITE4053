@@ -21,6 +21,10 @@ parser.add_argument('--loss', type=str, default='binary_crossentropy',
                     choices=['binary_crossentropy', 'mean_squared_error'],
                     help="Loss function")
 
+parser.add_argument('-l', '--layer', action='append', nargs='*',
+                    help='Define Layer (input_dim, output_dim, activation)'
+                         'Activation must be one of {sigmoid, relu}')
+
 parser.add_argument('--repeat', type=int, default=10,
                     help="Repeat train, valid")
 parser.add_argument('--seed', type=int, default=2,

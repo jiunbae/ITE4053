@@ -25,7 +25,7 @@ class Sigmoid(Activation):
 
 class ReLU(Activation):
     name = 'relu'
-    
+
     def forward(self, X: np.ndarray, grad: bool = True) -> np.ndarray:
         super(ReLU, self).forward(X, grad)
 
