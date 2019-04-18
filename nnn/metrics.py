@@ -9,6 +9,7 @@ class Metric:
 
 
 class Accuracy(Metric):
+    name = 'accuracy'
 
     def __call__(self, inputs: np.ndarray, targets: np.ndarray) \
             -> float:

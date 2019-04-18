@@ -1,11 +1,9 @@
 import numpy as np
 
-from nn import _Module
+from nnn.core import _Module
 
 
 class Loss(_Module):
-    name = '_Loss'
-
     def __int__(self, *args):
         super(Loss, self).__init__()
 
@@ -21,8 +19,8 @@ class Loss(_Module):
 class MSELoss(Loss):
     name = 'mean_squared_error'
 
-    def __int__(self, axis=None):
-        super(MSELoss, self).__init__()
+    def __int__(self, axis=None, *args):
+        super(MSELoss, self).__init__(*args)
 
         self.axis = axis
 
@@ -37,6 +35,9 @@ class MSELoss(Loss):
 
 class BCELoss(Loss):
     name = 'binary_crossentropy'
+
+    def __init__(self, *args):
+        super(BCELoss, self).__init__(*args)
 
     def forward(self, inputs: np.ndarray, targets: np.ndarray) \
             -> np.ndarray:

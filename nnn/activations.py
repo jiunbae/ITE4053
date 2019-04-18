@@ -1,6 +1,6 @@
 import numpy as np
 
-from nn import _Module
+from nnn.core import _Module
 
 
 class Activation(_Module):
@@ -8,6 +8,8 @@ class Activation(_Module):
 
 
 class Sigmoid(Activation):
+    name = 'sigmoid'
+
     def forward(self, X: np.ndarray, grad: bool = True) -> np.ndarray:
         super(Sigmoid, self).forward(X, grad)
 
@@ -22,6 +24,8 @@ class Sigmoid(Activation):
 
 
 class ReLU(Activation):
+    name = 'relu'
+    
     def forward(self, X: np.ndarray, grad: bool = True) -> np.ndarray:
         super(ReLU, self).forward(X, grad)
 

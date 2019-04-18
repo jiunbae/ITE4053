@@ -3,7 +3,7 @@ from functools import reduce
 
 from tqdm import tqdm
 
-from nn.layers import *
+from nnn.layers import *
 
 
 class Sequential(Layer):

@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-import utils
+from nnn import utils
 
 
 def main(args) -> float:
@@ -8,7 +8,7 @@ def main(args) -> float:
     if args.mode == 'tf':
         import tensorflow.keras as nn
     else:
-        import nn
+        import nnn as nn
 
     score = .0
 

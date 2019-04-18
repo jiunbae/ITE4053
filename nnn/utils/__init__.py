@@ -10,7 +10,7 @@ def init(seed: int):
     tf.random.set_random_seed(seed)
 
 
-from utils.data import Dataset
-from utils.arguments import arguments
+from nnn.utils.data import Dataset
+from nnn.utils.arguments import arguments
 
 init(arguments.seed)

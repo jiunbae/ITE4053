@@ -2,8 +2,8 @@ from typing import Optional
 
 import numpy as np
 
-import nn as types
-from nn import _Module
+import nnn as types
+from nnn.core import _Module
 
 
 class Layer(_Module):
