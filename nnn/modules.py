@@ -82,3 +82,9 @@ class Sequential(Layer):
     def size(self) \
             -> int:
         return sum(map(lambda x: x.size, self.layers))
+
+    @property
+    def parameters(self) \
+            -> Iterable[np.ndarray]:
+        for layer in self.layers:
+            yield layer.parameters

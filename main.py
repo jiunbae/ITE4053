@@ -1,3 +1,4 @@
+import numpy as np
 from tqdm import tqdm
 
 from nnn import utils
@@ -50,6 +51,11 @@ def main(args) -> float:
                           score=f'{acc*100:.2f}%',
                           mean=f'{score/(e+1)*100:.2f}%')
             t.update()
+
+    if args.mode == 'np' and args.save:
+        np.savez(args.save, **{
+            str(i): p for i, p in enumerate(model.parameters)
+        })
 
     return score / args.repeat
 
