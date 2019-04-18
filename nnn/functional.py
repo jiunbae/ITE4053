@@ -19,16 +19,15 @@ class Loss(_Module):
 class MSELoss(Loss):
     name = 'mean_squared_error'
 
-    def __int__(self, axis=None, *args):
+    def __int__(self, *args):
         super(MSELoss, self).__init__(*args)
 
-        self.axis = axis
 
     def forward(self, inputs: np.ndarray, targets: np.ndarray) \
             -> np.ndarray:
         super(MSELoss, self).forward(inputs, targets)
 
-        cost = (np.square(targets - inputs)).mean(axis=self.axis)
+        cost = np.mean((inputs - targets) ** 2)
 
         return cost
 
