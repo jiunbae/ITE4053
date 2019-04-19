@@ -68,6 +68,9 @@ class Sequential(Layer):
                 t.set_postfix(loss=f'{loss:.4f}')
                 t.update()
 
+        if verbose and t:
+            t.close()
+
     def evaluate(self, X: np.ndarray, Y: np.ndarray,
                  verbose: bool = True) \
             -> Tuple[Union[float, np.ndarray], float]:

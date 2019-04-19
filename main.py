@@ -57,6 +57,10 @@ def main(args) -> float:
             str(i): p for i, p in enumerate(model.parameters)
         })
 
+        print('\n\n== Parameters')
+        for i, layer in enumerate(model.layers):
+            print(f'{i}: {layer.__class__.__name__}', layer.parameters)
+
     return score / args.repeat
 
 

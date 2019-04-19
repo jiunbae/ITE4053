@@ -119,3 +119,12 @@ parameters = np.load('parameters.npz')
 for i, layer in enumerate(model.layers):
     layer.parameters = parameters[str(i)]
 ```
+
+
+| parameters | param1  | param2  | bias   |
+| ---------- | ------- | ------- | ------ |
+| Layer1-1   | -5.4167 | 4.1429  | 1.1458 |
+| Layer1-2   | -5.3711 | 4.1334  | 1.1175 |
+| Layer2     | -6.4002 | -6.3592 | 5.0729 |
+
+![Screen Shot 2019-04-19 at 1.20.18 PM](/Users/maybe/Downloads/resources/screenshots/Screen Shot 2019-04-19 at 1.20.18 PM.png)
