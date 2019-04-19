@@ -31,5 +31,7 @@ parser.add_argument('--repeat', type=int, default=10,
                     help="Repeat train, valid")
 parser.add_argument('--seed', type=int, default=2,
                     help="Manual seed")
+parser.add_argument('--verbose', default=False, action='store_true',
+                    help="More description")
 
 arguments = parser.parse_args()

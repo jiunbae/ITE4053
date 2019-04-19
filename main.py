@@ -41,10 +41,10 @@ def main(args) -> float:
                           metrics=['accuracy'])
 
             # Train model with train dataset
-            model.fit(train.X, train.Y, epochs=args.epoch, verbose=False)
+            model.fit(train.X, train.Y, epochs=args.epoch, verbose=args.verbose)
 
             # Test model with test dataset
-            loss, acc = model.evaluate(test.X, test.Y, verbose=False)
+            loss, acc = model.evaluate(test.X, test.Y, verbose=args.verbose)
             score += acc
 
             t.set_postfix(loss=f'{loss:.4f}',

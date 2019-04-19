@@ -39,6 +39,8 @@ class Sequential(Layer):
         any(map(lambda layer: layer.update(self.optimizer),
                 filter(lambda layer: issubclass(type(layer), types.Layer), self.layers)))
 
+        next(self.optimizer)
+
     def compile(self,
                 optimizer: Union[str, types.Optimizer],
                 loss: Union[str, types.Loss],

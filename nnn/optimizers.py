@@ -6,7 +6,10 @@ import numpy as np
 class Optimizer(object):
 
     def __init__(self, *args, **kwargs):
-        pass
+        self.iteration = 0
+
+    def __next__(self):
+        self.iteration += 1
 
     def get_update(self, params: np.ndarray, grads: np.ndarray):
         pass
@@ -30,18 +33,14 @@ class Adam(Optimizer):
         super(Adam, self).__init__(**kwargs)
 
         self.lr = lr
-        self.iterations = 0
         self.beta1, self.beta2 = beta1, beta2
         self.decay = decay
         self.epsilon = epsilon
         self.initial_decay = decay
 
-    def __next__(self):
-        self.iterations += 1
-
     def get_update(self, params: List[np.ndarray], grads: List[np.ndarray]):
-        lr = self.lr * ((1. / (1. + self.deacy * self.iterations)) if self.initial_decay > 0. else 1) * \
-             (np.sqrt(1. - np.power(self.beta2, 1+self.iterations)) / (1. - np.power(self.beta1, 1+self.iterations)))
+        lr = self.lr * ((1. / (1. + self.deacy * self.iteration)) if self.initial_decay > 0. else 1) * \
+             (np.sqrt(1. - np.power(self.beta2, 1+self.iteration)) / (1. - np.power(self.beta1, 1+self.iteration)))
 
         results = np.zeros(np.size(params, 0))
 

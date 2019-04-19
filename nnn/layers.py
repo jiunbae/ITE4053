@@ -42,6 +42,7 @@ class Layer(_Module):
     def update(self, optimizer: types.Optimizer):
         super(Layer, self).update()
 
+        # clear last input and output for next step
         _ = self.last_input, self.last_output
 
     @property
