@@ -34,7 +34,7 @@ model = nn.Sequentail([
 
 After compile you model, use `fit` and `evaluate` to train and test model.
 
-```
+```python
 model.fit(train.X, train.Y, epochs=100)
 loss, acc = model.evaluate(test.X, test.Y)
 ```
@@ -55,13 +55,13 @@ python main.py
 
 Also, You can find help and possible options by typing 
 
-```
+```shell
 python main.py --help
 ```
 
 For dependencies, install pcakge list on `requirements.txt`
 
-```
+```shell
 pip install -r requirements.txt
 ```
 
@@ -107,4 +107,15 @@ In **Dense**(Layer), `forward` just dot product the *input value* by the *parame
 optimizer = nn.optimizers.sgd(lr=.1)
 loss_function = nn.losses.MSE()
 metric = nn.metrics.accuracy()
+```
+
+## Save parameter retrival
+
+**Numpy** support *np.ndarray* save method. `parameters.npz` is saved *paramters*.
+
+```python
+parameters = np.load('parameters.npz')
+
+for i, layer in enumerate(model.layers):
+    layer.parameters = parameters[str(i)]
 ```
