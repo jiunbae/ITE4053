@@ -11,9 +11,11 @@ def main(args: argparse.Namespace):
     source_size = (args.source_size, args.source_size)
     target_size = (args.target_size, args.target_size)
 
-    train_generator = utils.data.Dataset(
+    train_generator = utils.data.Dataset([
         str(data_root.joinpath('91')),
-        ext='bmp', batch=32,
+        str(data_root.joinpath('291')),
+    ],
+        batch=128,
         size=target_size,
         target_transforms=[
             utils.transform.Crop(target_size),
@@ -26,7 +28,7 @@ def main(args: argparse.Namespace):
     val_generator = utils.data.Dataset(
         str(data_root.joinpath('Set5')),
         size=(args.target_size, args.target_size),
-        ext='png', batch=1,
+        batch=1,
         source_transforms=[
             utils.transform.Resize(scale=.5),
             utils.transform.Resize(scale=2.),
@@ -51,7 +53,7 @@ if __name__ == '__main__':
 
     parser.add_argument("--epoch", type=int, default=10000, required=False,
                         help="Epoch for training")
-    parser.add_argument("--interval", type=int, default=25, required=False)
+    parser.add_argument("--interval", type=int, default=100, required=False)
 
     parser.add_argument("--source-size", type=int, default=16, required=False)
     parser.add_argument("--target-size", type=int, default=32, required=False)

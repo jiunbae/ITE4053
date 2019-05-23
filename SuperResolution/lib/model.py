@@ -31,7 +31,7 @@ class SuperResolutionModel(object):
         self.model.fit_generator(
             train_generator,
             epochs=epochs,
-            steps_per_epoch=1000,
+            steps_per_epoch=len(train_generator),
             validation_data=val_generator,
             validation_steps=100,
             workers=4,

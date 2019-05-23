@@ -25,13 +25,11 @@ class CustomCallback(Callback):
 
                 image = np.zeros((limit, limit, 1))
 
-                source_w, source_h, c = img.shape
                 target_w, target_h, _ = map(int, np.array(img.shape) / (np.max(img.shape) / limit))
-                resized = np.expand_dims(cv2.resize(img, (target_h, target_w)), axis=-1)
 
                 x, y = int((limit - target_w) / 2), int((limit - target_h) / 2)
 
-                image[x:x+target_w, y:y+target_h] = resized
+                image[x:x+target_w, y:y+target_h] = np.expand_dims(cv2.resize(img, (target_h, target_w)), axis=-1)
 
                 return image
 
@@ -40,7 +38,7 @@ class CustomCallback(Callback):
             summary = tf.Summary.Image(encoded_image_string=cv2.imencode('.jpg', img)[1].tostring())
             return tf.Summary.Value(tag=tag, image=summary)
 
-        if epoch % self.interval:
+        if not (epoch % self.interval):
             self.writer.add_summary(tf.Summary(value=list(chain(
                 map(lambda istp: _summary_image(*istp[1],
                                                 tag=f'train_{istp[0]}'),

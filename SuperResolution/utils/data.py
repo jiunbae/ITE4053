@@ -1,5 +1,6 @@
-from typing import Tuple, List
+from typing import Union, Tuple, List
 from pathlib import Path
+from itertools import chain
 from functools import reduce
 
 import numpy as np
@@ -10,13 +11,13 @@ from utils.transform import Transform
 
 
 class Dataset(keras.utils.Sequence):
-    def __init__(self, root: str,
+    def __init__(self, root: Union[str, List[str]],
                  size: Tuple[int, int],
                  source_transforms: List[Transform] = None,
                  target_transforms: List[Transform] = None,
-                 ext: str = 'bmp', batch: int = 32, shuffle: bool = True):
-        self.root = Path(root)
-        self.ext = ext
+                 batch: int = 32, shuffle: bool = True):
+
+        self.root = root
         self.batch = batch
         self.shuffle = shuffle
         self.channels = 1
@@ -25,7 +26,10 @@ class Dataset(keras.utils.Sequence):
         self.source_transforms = source_transforms or []
         self.target_transforms = target_transforms or []
 
-        self.images = list(sorted(self.root.glob(f'*.{self.ext}')))
+        if not isinstance(root, list):
+            self.root = [self.root]
+
+        self.images = list(sorted(chain(*map(lambda p: Path(p).glob('*'), self.root))))
         self.indices = np.arange(len(self.images))
 
     def on_epoch_end(self) \
