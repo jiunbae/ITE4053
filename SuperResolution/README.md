@@ -21,3 +21,24 @@ I use PSNR as evaluation metric, (see **SuperResolutionNetwork.metric **at `lib/
 
 Implement **Custom Callback** (see **CustomCallback** at `utils/callbacks.py`) for logging loss, accuracy and sample images. For each interval, write inferenced image summary for one train set and all test set.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+![train_loss](C:\Users\maybe\Documents\Workspace\ITE4053\SuperResolution\assets\train_loss.png)
+
+![train_psnr](C:\Users\maybe\Documents\Workspace\ITE4053\SuperResolution\assets\train_psnr.png)
+
+![test_set](C:\Users\maybe\Documents\Workspace\ITE4053\SuperResolution\assets\test_set.png)
