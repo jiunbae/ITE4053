@@ -55,7 +55,7 @@ class Dataset(keras.utils.Sequence):
                 sources = np.empty((self.batch, *target.shape, self.channels), dtype=np.float32)
                 targets = np.empty((self.batch, *target.shape, self.channels), dtype=np.float32)
 
-            sources[b] = np.expand_dims(source, axis=-1)
-            targets[b] = np.expand_dims(target, axis=-1)
+            sources[b] = np.expand_dims(source / 255., axis=-1)
+            targets[b] = np.expand_dims(target / 255., axis=-1)
 
         return sources, targets

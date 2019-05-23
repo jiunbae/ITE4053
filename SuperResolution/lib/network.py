@@ -12,10 +12,16 @@ class SuperResolutionNetwork(object):
                          name="input_image")
 
         layer1 = KL.Conv2D(64, (3, 3), padding="SAME", activation='relu',
+                           kernel_initializer='random_uniform',
+                           bias_initializer='zeros',
                            name="layer1")(image)
         layer2 = KL.Conv2D(64, (3, 3), padding="SAME", activation='relu',
+                           kernel_initializer='random_uniform',
+                           bias_initializer='zeros',
                            name="layer2")(layer1)
         layer3 = KL.Conv2D(1, (3, 3), padding="SAME",
+                           kernel_initializer='random_uniform',
+                           bias_initializer='zeros',
                            name="layer3")(layer2)
 
         return KM.Model([image], [layer3],
@@ -24,7 +30,7 @@ class SuperResolutionNetwork(object):
     @staticmethod
     def metric(y_true: tf.Tensor, y_pred: tf.Tensor) \
             -> tf.Tensor:
-        return tf.image.psnr(y_true, y_pred, max_val=255.)
+        return tf.image.psnr(y_true, y_pred, max_val=1.)
 
     @classmethod
     def compile(cls, model, optimizer, loss, metric)\

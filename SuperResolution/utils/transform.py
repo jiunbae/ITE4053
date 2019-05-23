@@ -13,7 +13,7 @@ class Transform:
 
 
 class Crop(Transform):
-    def __init__(self, size: Tuple[int, int], pos: Tuple[int, int] = None):
+    def __init__(self, size: Tuple[int, int] = None, pos: Tuple[int, int] = None):
         super(Crop, self).__init__()
         self.size = size
         self.pos = pos
@@ -21,12 +21,17 @@ class Crop(Transform):
     def __call__(self, image: np.ndarray):
         super(Crop, self).__call__(image)
 
-        x, y = self.pos or (
-            np.random.randint(np.size(image, 0) - self.size[0]),
-            np.random.randint(np.size(image, 1) - self.size[1]),
+        w, h = self.size or (
+            np.random.randint(int(np.size(image, 0) / 2)),
+            np.random.randint(int(np.size(image, 1) / 2)),
         )
 
-        return image[x:x + self.size[0], y:y + self.size[1]]
+        x, y = self.pos or (
+            np.random.randint(np.size(image, 0) - w),
+            np.random.randint(np.size(image, 1) - h),
+        )
+
+        return image[x:x + w, y:y + h]
 
 
 class Resize(Transform):

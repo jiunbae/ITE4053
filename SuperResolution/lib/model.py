@@ -1,5 +1,4 @@
-from itertools import islice
-
+import numpy as np
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras import optimizers as optim
 from tensorflow.keras.callbacks import TensorBoard
@@ -21,14 +20,12 @@ class SuperResolutionModel(object):
               config: object, epochs: int) \
             -> None:
 
-        optimizer = optim.SGD(lr=config.lr,
-                              momentum=config.momentum,
-                              decay=config.lr_decay,
-                              clipnorm=5.0)
+        optimizer = optim.Adam(lr=config.lr,
+                               decay=config.lr_decay)
 
         SuperResolutionNetwork.compile(self.model,
                                        optimizer=optimizer,
-                                       loss='mse',
+                                       loss='mean_squared_error',
                                        metric=SuperResolutionNetwork.metric)
 
         self.model.fit_generator(
@@ -40,9 +37,9 @@ class SuperResolutionModel(object):
             workers=4,
             use_multiprocessing=True,
             callbacks=[
-                TensorBoard(log_dir=config.log, write_graph=True, write_images=True),
+                # TensorBoard(log_dir=config.log, write_graph=True, write_images=True),
                 CustomCallback(log_dir=config.log, interval=config.interval,
-                               train=train_generator[0], test=val_generator[0]),
+                               train=train_generator[0], test=[v for v in val_generator]),
             ]
         )
 
