@@ -18,6 +18,7 @@ def main(args: argparse.Namespace):
         batch=128,
         size=target_size,
         target_transforms=[
+            utils.transform.Resize(),
             utils.transform.Crop(target_size),
         ], source_transforms=[
             utils.transform.Resize(source_size),
@@ -36,10 +37,11 @@ def main(args: argparse.Namespace):
     )
 
     model = SuperResolutionModel(shape=(args.target_size, args.target_size, 1))
+
     model.train(train_generator=train_generator,
                 val_generator=val_generator,
-                epochs=args.epoch,
-                config=args)
+                epochs=args.epoch, config=args)
+
     model.save('model.hdf5')
 
 

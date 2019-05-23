@@ -43,5 +43,11 @@ class Resize(Transform):
         self.metric = metric
 
     def __call__(self, image: np.ndarray):
-        return cv2.resize(image, self.size, fx=self.scale, fy=self.scale,
+
+        scale = self.scale
+
+        if self.size == (0, 0) and self.scale == 1.:
+            scale = (np.random.rand(1) * .5 + .5)[0]
+
+        return cv2.resize(image, self.size, fx=scale, fy=scale,
                           interpolation=self.metric)
