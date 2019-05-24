@@ -23,7 +23,7 @@ Implement **Custom Callback** (see **CustomCallback** at `utils/callbacks.py`) f
 
 ## Results
 
-In terms of time, it was only 2500 epoch. However, PSN and loss is saturated after 1000 epoch
+In terms of time, it was only 2500 epoch. However, PSN and loss is saturated after 1000 epoch. Model parameters is saved on `model.hdf5` using keras model save method.
 
 See `./assets` directory for results. Train, prediction and test image is merged for easy compare (re-scale image, prediction image, ground truth image).
 
