@@ -29,13 +29,15 @@ def main(args: argparse.Namespace):
         str(data_root.joinpath('Set5')),
         size=(args.target_size, args.target_size),
         batch=1,
-        source_transforms=[
+        target_transforms=[
+            utils.transform.Crop(target_size),
+        ], source_transforms=[
             utils.transform.Resize(scale=.5),
             utils.transform.Resize(scale=2.),
         ]
     )
 
-    model = SuperResolutionModel(shape=(args.target_size, args.target_size, 1))
+    model = SuperResolutionModel(mode=args.mode)
     model.train(train_generator=train_generator,
                 val_generator=val_generator,
                 epochs=args.epoch,
@@ -48,6 +50,8 @@ if __name__ == '__main__':
     parser.add_argument("command", metavar="<command>",
                         choices=['train', 'eval'],
                         help="'train' or 'eval'")
+    parser.add_argument("--mode", default='cnn', choices=['cnn', 'rnn'],
+                        help="Select mode for training model")
     parser.add_argument("--dataset", type=str, default='./data', required=False,
                         help="Dataset root directory")
 

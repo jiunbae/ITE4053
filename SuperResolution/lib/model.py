@@ -1,18 +1,15 @@
-import numpy as np
 from tensorflow.keras.utils import Sequence
 from tensorflow.keras import optimizers as optim
-from tensorflow.keras.callbacks import TensorBoard
 
-from lib.network import SuperResolutionNetwork
+from network import SuperResolutionNetwork
 from utils.callbacks import CustomCallback
 
 
 class SuperResolutionModel(object):
 
-    def __init__(self, shape: tuple = (32, 32, 1)):
-        self.shape = shape
-
-        self.model = SuperResolutionNetwork(shape=shape)
+    def __init__(self, mode: str):
+        self.klass = SuperResolutionNetwork(mode=mode)
+        self.model = self.klass()
 
     def train(self,
               train_generator: Sequence,
@@ -23,10 +20,10 @@ class SuperResolutionModel(object):
         optimizer = optim.Adam(lr=config.lr,
                                decay=config.lr_decay)
 
-        SuperResolutionNetwork.compile(self.model,
-                                       optimizer=optimizer,
-                                       loss='mean_squared_error',
-                                       metric=SuperResolutionNetwork.metric)
+        self.klass.compile(self.model,
+                           optimizer=optimizer,
+                           loss=self.klass.loss,
+                           metric=self.klass.metric)
 
         self.model.fit_generator(
             train_generator,

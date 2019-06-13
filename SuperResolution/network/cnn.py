@@ -1,11 +1,12 @@
 import tensorflow as tf
+from tensorflow.keras import backend as K
 from tensorflow.keras import models as KM
 from tensorflow.keras import layers as KL
 
 
 class SuperResolutionNetwork(object):
 
-    def __new__(cls, shape: tuple = (32, 32, 1)) \
+    def __new__(cls) \
             -> KM.Model:
 
         image = KL.Input(shape=[None, None, 1],
@@ -25,10 +26,15 @@ class SuperResolutionNetwork(object):
                            name="layer3")(layer2)
 
         return KM.Model([image], [layer3],
-                        name='SR')
+                        name='SRN')
 
     @staticmethod
-    def metric(y_true: tf.Tensor, y_pred: tf.Tensor) \
+    def loss(y_true: tf.Tensor, y_pred: tf.Tensor) \
+            -> tf.Tensor:
+        return K.mean(K.square(y_pred - y_true))
+
+    @classmethod
+    def metric(cls, y_true: tf.Tensor, y_pred: tf.Tensor) \
             -> tf.Tensor:
         return tf.image.psnr(y_true, y_pred, max_val=1.)
 
