@@ -32,8 +32,8 @@ In terms of time, it was only 1000 epoch. However, PSN and loss is saturated aft
 
 See `./assets` directory for results. Train, prediction and test image is merged for easy compare (re-scale image, prediction image, ground truth image).
 
-![loss_psnr](C:\Users\maybe\Documents\Workspace\ITE4053\SuperResolution\assets\loss_psnr_rnn.png)
+![loss_psnr](https://github.com/MaybeS/ITE4053/blob/master/SuperResolution/assets/loss_psnr_rnn.png?raw=true)
 
 This is some train samples for check train is running well.
 
-![train_samples](C:\Users\maybe\Documents\Workspace\ITE4053\SuperResolution\assets\train_samples_rnn.png)
+![train_samples](https://github.com/MaybeS/ITE4053/blob/master/SuperResolution/assets/train_samples_rnn.png?raw=true)
