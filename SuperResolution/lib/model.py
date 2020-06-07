@@ -2,7 +2,7 @@ from tensorflow.keras.utils import Sequence
 from tensorflow.keras import optimizers as optim
 
 from network import SuperResolutionNetwork
-from utils.callbacks import CustomCallback
+from utils.callback import CustomCallback
 
 
 class SuperResolutionModel(object):
