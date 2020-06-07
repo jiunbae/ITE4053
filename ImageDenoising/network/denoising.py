@@ -8,33 +8,52 @@ class DenoisingNetwork(object):
 
     def __new__(cls, mode: str) \
             -> KM.Model:
+        assert mode in ['base', 'skip', 'bn']
 
-        image = KL.Input(shape=[None, None, 3],
-                         name="input_image")
+        inputs = KL.Input(shape=[None, None, 3],
+                          name="input_image")
+        x = inputs
+        x = KL.Conv2D(64, (3, 3), padding="SAME",
+                      kernel_initializer='random_uniform',
+                      bias_initializer='zeros',
+                      name="layer1")(x)
+        if mode == 'bn':
+            x = KL.BatchNormalization()(x)
+        x = KL.ReLU()(x)
+        x = KL.Conv2D(64, (3, 3), padding="SAME",
+                      kernel_initializer='random_uniform',
+                      bias_initializer='zeros',
+                      name="layer2")(x)
+        if mode == 'bn':
+            x = KL.BatchNormalization()(x)
+        x = KL.ReLU()(x)
+        x = KL.Conv2D(64, (3, 3), padding="SAME",
+                      kernel_initializer='random_uniform',
+                      bias_initializer='zeros',
+                      name="layer3")(x)
+        if mode == 'bn':
+            x = KL.BatchNormalization()(x)
+        x = KL.ReLU()(x)
+        x = KL.Conv2D(64, (3, 3), padding="SAME",
+                      kernel_initializer='random_uniform',
+                      bias_initializer='zeros',
+                      name="layer4")(x)
+        if mode == 'bn':
+            x = KL.BatchNormalization()(x)
+        x = KL.ReLU()(x)
+        x = KL.Conv2D(3, (3, 3), padding="SAME",
+                      kernel_initializer='random_uniform',
+                      bias_initializer='zeros',
+                      name="layer5")(x)
+        if mode == 'bn':
+            x = KL.BatchNormalization()(x)
+        x = KL.ReLU()(x)
 
-        layer1 = KL.Conv2D(64, (3, 3), padding="SAME", activation='relu',
-                           kernel_initializer='random_uniform',
-                           bias_initializer='zeros',
-                           name="layer1")(image)
-        layer2 = KL.Conv2D(64, (3, 3), padding="SAME", activation='relu',
-                           kernel_initializer='random_uniform',
-                           bias_initializer='zeros',
-                           name="layer2")(layer1)
-        layer3 = KL.Conv2D(64, (3, 3), padding="SAME", activation='relu',
-                           kernel_initializer='random_uniform',
-                           bias_initializer='zeros',
-                           name="layer3")(layer2)
-        layer4 = KL.Conv2D(64, (3, 3), padding="SAME", activation='relu',
-                           kernel_initializer='random_uniform',
-                           bias_initializer='zeros',
-                           name="layer4")(layer3)
-        layer5 = KL.Conv2D(3, (3, 3), padding="SAME", activation='relu',
-                           kernel_initializer='random_uniform',
-                           bias_initializer='zeros',
-                           name="layer5")(layer4)
+        if mode == 'skip' or mode == 'bn':
+            x = KL.average([x, inputs])
 
-        return KM.Model([image], [layer5],
-                        name='Denoising')
+        return KM.Model(inputs=inputs, outputs=x,
+                        name='denoising')
 
     @staticmethod
     def loss(y_true: tf.Tensor, y_pred: tf.Tensor) \
