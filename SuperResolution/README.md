@@ -17,7 +17,7 @@ Use all `91` and `291` dataset. Create target image, random crop from image afte
 
 ## Evaluation
 
-I use PSNR as evaluation metric, (see **SuperResolutionNetwork.metric **at `lib/network.py`) using TensorFlow implementation, `tf.image.psnr`.
+I use PSNR as evaluation metric, (see **SuperResolutionNetwork.metric** at `lib/network.py`) using TensorFlow implementation, `tf.image.psnr`.
 
 Implement **Custom Callback** (see **CustomCallback** at `utils/callbacks.py`) for logging loss, accuracy and sample images. For each interval, write inferenced image summary for one train set and all test set.
 
