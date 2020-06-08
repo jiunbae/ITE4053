@@ -30,9 +30,14 @@ def main(args: argparse.Namespace):
 
     model.save('model.hdf5')
 
+    if args.test:
+        eval_dataset = utils.data.Eval(args.test)
+        result = model.predict(eval_dataset.image)
+        eval_dataset.set_result(result * 255.).to_png(args.test)
+
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Evaluate Multi Object Tracking')
+    parser = argparse.ArgumentParser(description='Evaluate Image Denoising')
     parser.add_argument("command", metavar="<command>",
                         choices=['train', 'eval'],
                         help="'train' or 'eval'")
@@ -41,13 +46,15 @@ if __name__ == '__main__':
 
     parser.add_argument("--epoch", type=int, default=100, required=False,
                         help="Epoch for training")
-    parser.add_argument("--interval", type=int, default=100, required=False)
+    parser.add_argument("--interval", type=int, default=1, required=False)
     parser.add_argument("--batch", type=int, default=32, required=False,
                         help="Mini-batch for training")
 
     parser.add_argument("--lr", type=float, default=.001, required=False)
     parser.add_argument("--lr-decay", type=float, default=.0, required=False)
 
+    parser.add_argument("--test", type=str, default='', required=False,
+                        help="Test filename")
     parser.add_argument("--log", type=str, default='./logs', required=False,
                         help="Logging directory")
     parser.add_argument("--seed", type=int, default=42, required=False,

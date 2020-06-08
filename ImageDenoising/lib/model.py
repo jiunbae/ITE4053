@@ -35,10 +35,14 @@ class DenoisingModel(object):
             use_multiprocessing=True,
             callbacks=[
                 # TensorBoard(log_dir=config.log, write_graph=True, write_images=True),
-                CustomCallback(log_dir=config.log, interval=config.interval,
-                               train=train_generator[0], test=[v for v in val_generator]),
+                # CustomCallback(log_dir=config.log, interval=config.interval,
+                #                train=train_generator[0], test=[v for v in val_generator]),
             ]
         )
+
+    def predict(self, inputs):
+        result, *_ = self.model.predict(inputs)
+        return result
 
     def save(self, path: str):
         self.model.save(path)

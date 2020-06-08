@@ -3,11 +3,25 @@ from pathlib import Path
 from itertools import chain
 from functools import reduce
 
+import cv2
 import numpy as np
 import tensorflow.keras as keras
 
 from utils.transform import Transform
 
+
+class Eval:
+    def __init__(self, filename: str):
+        self.image = np.expand_dims(cv2.imread(filename) / 255., axis=0)
+    
+    def set_result(self, image: np.ndarray):
+        self.image = image
+        return self
+    
+    def to_png(self, filename: str):
+        *path, ext = filename.split('.')
+        filename = '.'.join(path) + '-result' + ext
+        cv2.imwrite(filename, self.image)
 
 class Dataset(keras.utils.Sequence):
     def __init__(self, train: bool = True,

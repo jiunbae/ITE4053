@@ -15,7 +15,7 @@ class CustomCallback(Callback):
         self.test = test
         self.interval = interval
 
-        self.writer = tf.summary.FileWriter(log_dir)
+        self.writer = tf.compat.v1.summary.FileWriter(log_dir)
 
     def on_epoch_end(self, epoch, logs=None):
         def _summary_image(*spt, tag):
@@ -35,16 +35,16 @@ class CustomCallback(Callback):
 
             s, p, t = map(_squeeze, spt)
             img = np.hstack((s * 255., p * 255., t * 255.))
-            summary = tf.Summary.Image(encoded_image_string=cv2.imencode('.jpg', img)[1].tostring())
-            return tf.Summary.Value(tag=tag, image=summary)
+            summary = tf.summary.Image(encoded_image_string=cv2.imencode('.jpg', img)[1].tostring())
+            return tf.compat.v1.summary.Value(tag=tag, image=summary)
 
         if not (epoch % self.interval):
-            self.writer.add_summary(tf.Summary(value=list(chain(
+            self.writer.add_summary(tf.compat.v1.summary(value=list(chain(
                 map(lambda istp: _summary_image(*istp[1],
                                                 tag=f'train_{istp[0]}'),
                     enumerate(zip(self.train[0], self.model.predict(self.train), self.train[1]))),
                 map(lambda it: _summary_image(it[1][0][0], self.model.predict(it[1])[0], it[1][1][0],
                                               tag=f'test_{it[0]}'),
                     enumerate(self.test)),
-                map(lambda kv: tf.Summary.Value(tag=kv[0], simple_value=kv[1]), logs.items())
+                map(lambda kv: tf.compat.v1.summary.Value(tag=kv[0], simple_value=kv[1]), logs.items())
             ))), epoch)
