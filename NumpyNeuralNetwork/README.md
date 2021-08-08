@@ -76,7 +76,7 @@ graph TD;
 	Layer2(Layer2 param1)-->Output(Output)
 ```
 
-![](https://github.com/MaybeS/ITE4053/blob/master/assets/network.png?raw=true)
+![](https://github.com/jiunbae/ITE4053/blob/master/assets/network.png?raw=true)
 
 In this assignment, use `SGD` as optimizer, `BCE` as loss function and `sigmoid` as activation function. Each test performed on 128 dataset with 5000 epoch, learning rate 0.1. The random seed is fixed at 2.
 
@@ -129,4 +129,4 @@ for i, layer in enumerate(model.layers):
 | Layer1-2   | -5.3711 | 4.1334  | 1.1175 |
 | Layer2     | -6.4002 | -6.3592 | 5.0729 |
 
-![results](https://github.com/MaybeS/ITE4053/blob/master/assets/results.png?raw=true)
+![results](https://github.com/jiunbae/ITE4053/blob/master/assets/results.png?raw=true)
